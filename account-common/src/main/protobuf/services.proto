@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package io.superflat.protobuf.account;
+
+import "commands.proto";
+import "apis.proto";
+
+service AccountGrpcService {
+    rpc OpenAccount (OpenAccountRequest) returns (ApiResponse);
+    rpc DebitAccount (TransferMoneyRequest) returns (ApiResponse);
+    rpc CreditAccount (ReceiveMoneyRequest) returns (ApiResponse);
+    rpc Get (GetAccount) returns (ApiResponse);
+}

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package io.superflat.protobuf.account;
+
+import "state.proto";
+
+message OpenAccountRequest {
+    string company_uuid = 1;
+    double balance = 2;
+    string account_owner = 3;
+}
+
+message TransferMoneyRequest {
+    string company_uuid = 1;
+    string account_id = 2;
+    double amount = 3;
+}
+
+message ReceiveMoneyRequest {
+    string company_uuid = 1;
+    string account_id = 2;
+    double amount = 3;
+}
+
+message ApiResponse {
+    BankAccount data = 1;
+}
+

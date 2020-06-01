@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package io.superflat.protobuf.account;
+
+import "lagompb/extensions.proto";
+
+message AccountOpened {
+    string company_uuid = 1 [(lagompb.kafka).partition_key = true];
+    string account_id = 2;
+    double balance = 3;
+    string account_owner = 4;
+}
+
+message MoneyTransferred {
+    string company_uuid = 1 [(lagompb.kafka).partition_key = true];
+    string account_id = 2;
+    double balance = 3;
+}
+
+message MoneyReceived {
+    string company_uuid = 1 [(lagompb.kafka).partition_key = true];
+    string account_id = 2;
+    double balance = 3;
+}

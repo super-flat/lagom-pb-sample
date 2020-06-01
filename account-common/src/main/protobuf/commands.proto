@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package io.superflat.protobuf.account;
+
+import "google/protobuf/timestamp.proto";
+import "lagompb/extensions.proto";
+
+message OpenBankAccount {
+    string company_uuid = 1 [(lagompb.command).entity_id = true];
+    string account_id = 2;
+    double balance = 3;
+    string account_owner = 4;
+    google.protobuf.Timestamp opened_at = 5;
+}
+
+message TransferMoney {
+    string company_uuid = 1 [(lagompb.command).entity_id = true];
+    string account_id = 2;
+    double amount = 3;
+    google.protobuf.Timestamp transferred_at = 5;
+}
+
+message ReceiveMoney {
+    string company_uuid = 1 [(lagompb.command).entity_id = true];
+    string account_id = 2;
+    double amount = 3;
+    google.protobuf.Timestamp received_at = 5;
+}
+
+message GetAccount {
+    string company_uuid = 1 [(lagompb.command).entity_id = true];
+    string account_id = 2;
+}
+
+
+

@@ -19,17 +19,6 @@ abstract class AccountApplication(context: LagomApplicationContext) extends Lago
   lazy val accountRepository: AccountRepository =
     wire[AccountRepository]
 
-  lazy val accountProjection: AccountReadProjection = wire[AccountReadProjection]
-  lazy val accountKafkaProjection: AccountKafkaProjection = wire[AccountKafkaProjection]
-
-  val isLagomReadSide: Boolean = config.getBoolean("lagom-read-side")
-  if (isLagomReadSide) {
-    readSide.register(wire[AccountReadProcessor])
-  } else {
-    accountProjection.init()
-    accountKafkaProjection.init()
-  }
-
   // wire up the various event and command handler
   lazy val eventHandler: LagompbEventHandler[BankAccount] = wire[AccountEventHandler]
   lazy val commandHandler: LagompbCommandHandler[BankAccount] = wire[AccountCommandHandler]
@@ -40,6 +29,12 @@ abstract class AccountApplication(context: LagomApplicationContext) extends Lago
   override def server: LagomServer =
     serverFor[AccountService](wire[AccountServiceImpl])
       .additionalRouter(wire[AccountGrpcServiceImpl])
+
+  lazy val accountProjection: AccountReadProjection = wire[AccountReadProjection]
+  //lazy val accountKafkaProjection: AccountKafkaProjection = wire[AccountKafkaProjection]
+
+  accountProjection.init()
+  // accountKafkaProjection.init()
 }
 
 class AccountApplicationLoader extends LagomApplicationLoader {

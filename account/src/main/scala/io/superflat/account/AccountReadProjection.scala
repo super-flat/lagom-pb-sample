@@ -4,7 +4,6 @@ import java.time.Instant
 
 import akka.Done
 import akka.actor.ActorSystem
-import com.typesafe.config.Config
 import io.superflat.protobuf.account.events.{AccountOpened, MoneyTransferred}
 import io.superflat.protobuf.account.state.BankAccount
 import lagompb.LagompbException
@@ -13,20 +12,18 @@ import lagompb.readside.LagompbSlickProjection
 import scalapb.{GeneratedMessage, GeneratedMessageCompanion}
 import slick.dbio.{DBIO, DBIOAction, Effect, NoStream}
 
-import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}
+import scala.concurrent.duration.Duration
 
 /**
  * This is to illustrate how to implement a readSide with lagom-pb using akka projection
  *
- * @param config
  * @param actorSystem
  * @param repository
  * @param ec
  */
-class AccountReadProjection(config: Config, actorSystem: ActorSystem, repository: AccountRepository)(
-    implicit ec: ExecutionContext
-) extends LagompbSlickProjection[BankAccount](config, actorSystem) {
+class AccountReadProjection(actorSystem: ActorSystem, repository: AccountRepository)(implicit ec: ExecutionContext)
+    extends LagompbSlickProjection[BankAccount](actorSystem) {
   override def handle(event: GeneratedMessage, state: BankAccount, metaData: MetaData): DBIO[Done] = {
 
     event match {

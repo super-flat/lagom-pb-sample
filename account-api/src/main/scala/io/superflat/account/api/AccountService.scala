@@ -1,9 +1,9 @@
 package io.superflat.account.api
 
 import akka.NotUsed
+import com.lightbend.lagom.scaladsl.api.{Descriptor, ServiceCall}
 import com.lightbend.lagom.scaladsl.api.Service.restCall
 import com.lightbend.lagom.scaladsl.api.transport.Method
-import com.lightbend.lagom.scaladsl.api.{Descriptor, ServiceCall}
 import io.superflat.protobuf.account.apis.{ApiResponse, OpenAccountRequest, ReceiveMoneyRequest, TransferMoneyRequest}
 import lagompb.LagompbService
 

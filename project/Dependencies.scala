@@ -7,7 +7,7 @@ object Dependencies {
 
   object Versions {
     val scala213 = "2.13.1"
-    val lagompVersion = "0.1.0+29-71388fc0-SNAPSHOT"
+    val lagompVersion = "0.2.0"
     val akkaVersion: String = "2.6.6"
     val scalapbCommonProtosVersion: String = "1.18.0-0"
     val silencerVersion = "1.6.0"

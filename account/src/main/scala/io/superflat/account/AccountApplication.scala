@@ -31,10 +31,10 @@ abstract class AccountApplication(context: LagomApplicationContext) extends Lago
       .additionalRouter(wire[AccountGrpcServiceImpl])
 
   lazy val accountProjection: AccountReadProjection = wire[AccountReadProjection]
-  //lazy val accountKafkaProjection: AccountKafkaProjection = wire[AccountKafkaProjection]
+  lazy val accountKafkaProjection: AccountKafkaProjection = wire[AccountKafkaProjection]
 
   accountProjection.init()
-  // accountKafkaProjection.init()
+  accountKafkaProjection.init()
 }
 
 class AccountApplicationLoader extends LagomApplicationLoader {

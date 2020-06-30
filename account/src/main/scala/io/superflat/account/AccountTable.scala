@@ -1,8 +1,8 @@
-package io.superflat.account
+package io.superflat.lagompb.samples.account
 
 import java.time.Instant
 
-import lagompb.readside.LagompbSlickTable
+import io.superflat.lagompb.readside.LagompbSlickTable
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.{ProvenShape, Rep}
 

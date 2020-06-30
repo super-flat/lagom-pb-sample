@@ -1,4 +1,4 @@
-package io.superflat.account
+package io.superflat.lagompb.samples.account
 
 import java.time.Instant
 import java.util.UUID
@@ -6,12 +6,12 @@ import java.util.UUID
 import akka.actor.ActorSystem
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
 import akka.grpc.scaladsl.Metadata
-import io.superflat.account.common._
-import io.superflat.protobuf.account.apis.{ApiResponse, OpenAccountRequest, ReceiveMoneyRequest, TransferMoneyRequest}
-import io.superflat.protobuf.account.commands.{GetAccount, OpenBankAccount, ReceiveMoney, TransferMoney}
-import io.superflat.protobuf.account.services.AbstractAccountGrpcServicePowerApiRouter
-import io.superflat.protobuf.account.state.BankAccount
-import lagompb.{LagompbAggregate, LagompbGrpcServiceImpl}
+import io.superflat.lagompb.samples.account.common._
+import io.superflat.lagompb.samples.protobuf.account.apis.{ApiResponse, OpenAccountRequest, ReceiveMoneyRequest, TransferMoneyRequest}
+import io.superflat.lagompb.samples.protobuf.account.commands.{GetAccount, OpenBankAccount, ReceiveMoney, TransferMoney}
+import io.superflat.lagompb.samples.protobuf.account.services.AbstractAccountGrpcServicePowerApiRouter
+import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
+import io.superflat.lagompb.{LagompbAggregate, LagompbGrpcServiceImpl}
 import scalapb.{GeneratedMessage, GeneratedMessageCompanion}
 
 import scala.concurrent.{ExecutionContext, Future}

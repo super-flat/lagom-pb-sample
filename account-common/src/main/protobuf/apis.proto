@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package io.superflat.protobuf.account;
+package lagompb.samples;
+
+option java_package = "io.superflat.lagompb.samples.protobuf.account";
 
 import "state.proto";
 
@@ -25,4 +27,3 @@ message ReceiveMoneyRequest {
 message ApiResponse {
     BankAccount data = 1;
 }
-

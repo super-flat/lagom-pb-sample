@@ -1,8 +1,9 @@
-package io.superflat.account
+package io.superflat.lagompb.samples.account
 
 import akka.actor.ActorSystem
-import io.superflat.protobuf.account.state.BankAccount
-import lagompb.readside.LagompbKafkaProjection
+import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
+import io.superflat.lagompb.readside.LagompbKafkaProjection
+import io.superflat.lagompb.ProtoEncryption
 import scalapb.GeneratedMessageCompanion
 
 import scala.concurrent.ExecutionContext
@@ -13,8 +14,8 @@ import scala.concurrent.ExecutionContext
  * @param actorSystem
  * @param ec
  */
-class AccountKafkaProjection(actorSystem: ActorSystem)(implicit ec: ExecutionContext)
-    extends LagompbKafkaProjection[BankAccount](actorSystem) {
+class AccountKafkaProjection(actorSystem: ActorSystem, encryptor: ProtoEncryption)(implicit ec: ExecutionContext)
+    extends LagompbKafkaProjection[BankAccount](encryptor, actorSystem) {
   override def aggregateStateCompanion: GeneratedMessageCompanion[BankAccount] = BankAccount
 
   override def projectionName: String = "accounts-kafka-projection"

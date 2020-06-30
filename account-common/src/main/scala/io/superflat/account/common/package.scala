@@ -1,4 +1,4 @@
-package io.superflat.account
+package io.superflat.lagompb.samples.account
 
 import java.time.{Instant, LocalDate, ZoneId}
 

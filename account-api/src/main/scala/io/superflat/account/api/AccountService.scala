@@ -1,11 +1,11 @@
-package io.superflat.account.api
+package io.superflat.lagompb.samples.account.api
 
 import akka.NotUsed
 import com.lightbend.lagom.scaladsl.api.{Descriptor, ServiceCall}
 import com.lightbend.lagom.scaladsl.api.Service.restCall
 import com.lightbend.lagom.scaladsl.api.transport.Method
-import io.superflat.protobuf.account.apis.{ApiResponse, OpenAccountRequest, ReceiveMoneyRequest, TransferMoneyRequest}
-import lagompb.LagompbService
+import io.superflat.lagompb.samples.protobuf.account.apis.{ApiResponse, OpenAccountRequest, ReceiveMoneyRequest, TransferMoneyRequest}
+import io.superflat.lagompb.LagompbService
 
 trait AccountService extends LagompbService {
 

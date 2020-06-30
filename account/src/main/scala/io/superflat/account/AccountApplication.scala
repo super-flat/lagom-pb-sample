@@ -1,4 +1,4 @@
-package io.superflat.account
+package io.superflat.lagompb.samples.account
 
 import com.lightbend.lagom.scaladsl.akka.discovery.AkkaDiscoveryComponents
 import com.lightbend.lagom.scaladsl.api.Descriptor
@@ -10,9 +10,10 @@ import com.lightbend.lagom.scaladsl.server.{
   LagomServer
 }
 import com.softwaremill.macwire.wire
-import io.superflat.account.api.AccountService
-import io.superflat.protobuf.account.state.BankAccount
-import lagompb.{LagompbAggregate, LagompbApplication, LagompbCommandHandler, LagompbEventHandler}
+import io.superflat.lagompb.samples.account.api.AccountService
+import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
+import io.superflat.lagompb.{LagompbAggregate, LagompbApplication, LagompbCommandHandler, LagompbEventHandler}
+import io.superflat.lagompb.{NoEncryption, ProtoEncryption}
 
 abstract class AccountApplication(context: LagomApplicationContext) extends LagompbApplication(context) {
   // Let us hook in the readSide Processor
@@ -30,11 +31,12 @@ abstract class AccountApplication(context: LagomApplicationContext) extends Lago
     serverFor[AccountService](wire[AccountServiceImpl])
       .additionalRouter(wire[AccountGrpcServiceImpl])
 
+  lazy val encryptor: ProtoEncryption = NoEncryption
   lazy val accountProjection: AccountReadProjection = wire[AccountReadProjection]
-  lazy val accountKafkaProjection: AccountKafkaProjection = wire[AccountKafkaProjection]
+  // lazy val accountKafkaProjection: AccountKafkaProjection = wire[AccountKafkaProjection]
 
   accountProjection.init()
-  accountKafkaProjection.init()
+  // accountKafkaProjection.init()
 }
 
 class AccountApplicationLoader extends LagomApplicationLoader {

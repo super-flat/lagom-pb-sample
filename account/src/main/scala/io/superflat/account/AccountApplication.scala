@@ -13,7 +13,7 @@ import com.softwaremill.macwire.wire
 import io.superflat.lagompb.samples.account.api.AccountService
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
 import io.superflat.lagompb.{LagompbAggregate, LagompbApplication, LagompbCommandHandler, LagompbEventHandler}
-import io.superflat.lagompb.{NoEncryption, ProtoEncryption}
+import io.superflat.lagompb.encryption.{NoEncryption, ProtoEncryption}
 
 abstract class AccountApplication(context: LagomApplicationContext) extends LagompbApplication(context) {
   // Let us hook in the readSide Processor

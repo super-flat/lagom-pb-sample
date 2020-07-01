@@ -1,6 +1,6 @@
 package io.superflat.lagompb.samples.account
 
-import io.superflat.lagompb.{ProtoEncryption, NoEncryption, DefaultEventAdapter, EncryptFailure, DecryptPermanentFailure}
+import io.superflat.lagompb.encryption.{ProtoEncryption, NoEncryption, EncryptFailure, DecryptPermanentFailure}
 import io.superflat.lagompb.protobuf.encryption.EncryptedProto
 import io.superflat.lagompb.protobuf.core.EventWrapper
 import scala.util.{Try, Success, Failure}

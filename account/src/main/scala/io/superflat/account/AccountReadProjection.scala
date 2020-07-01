@@ -4,10 +4,11 @@ import java.time.Instant
 
 import akka.Done
 import akka.actor.ActorSystem
+import akka.actor.typed.scaladsl.adapter._
 import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, MoneyTransferred}
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
 import io.superflat.lagompb.LagompbException
-import io.superflat.lagompb.ProtoEncryption
+import io.superflat.lagompb.encryption.ProtoEncryption
 import io.superflat.lagompb.protobuf.core.MetaData
 import io.superflat.lagompb.readside.LagompbSlickProjection
 import scalapb.{GeneratedMessage, GeneratedMessageCompanion}
@@ -24,7 +25,7 @@ import scala.concurrent.duration.Duration
  * @param ec
  */
 class AccountReadProjection(encryptor: ProtoEncryption, actorSystem: ActorSystem, repository: AccountRepository)(implicit ec: ExecutionContext)
-    extends LagompbSlickProjection[BankAccount](encryptor, actorSystem) {
+    extends LagompbSlickProjection[BankAccount](encryptor)(ec, actorSystem.toTyped) {
   override def handle(event: GeneratedMessage, state: BankAccount, metaData: MetaData): DBIO[Done] = {
 
     event match {

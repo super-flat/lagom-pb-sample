@@ -1,10 +1,10 @@
-package io.superflat.account
+package io.superflat.lagompb.samples.account
 
 import akka.actor.ActorSystem
-import io.superflat.protobuf.account.events.{AccountOpened, MoneyReceived, MoneyTransferred}
-import io.superflat.protobuf.account.state.BankAccount
-import lagompb.LagompbEventHandler
-import lagompb.core.MetaData
+import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, MoneyReceived, MoneyTransferred}
+import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
+import io.superflat.lagompb.LagompbEventHandler
+import io.superflat.lagompb.protobuf.core.MetaData
 
 class AccountEventHandler(actorSystem: ActorSystem) extends LagompbEventHandler[BankAccount](actorSystem) {
 

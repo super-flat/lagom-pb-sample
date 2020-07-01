@@ -1,8 +1,8 @@
-package io.superflat.account
+package io.superflat.lagompb.samples.account
 
 import akka.actor.ActorSystem
-import io.superflat.protobuf.account.state.BankAccount
-import lagompb.{LagompbAggregate, LagompbCommandHandler, LagompbEventHandler}
+import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
+import io.superflat.lagompb.{LagompbAggregate, LagompbCommandHandler, LagompbEventHandler}
 import scalapb.GeneratedMessageCompanion
 
 final class AccountAggregate(

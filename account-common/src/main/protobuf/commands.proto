@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package io.superflat.protobuf.account;
+package lagompb.samples;
+
+option java_package = "io.superflat.lagompb.samples.protobuf.account";
 
 import "google/protobuf/timestamp.proto";
 import "lagompb/extensions.proto";
@@ -31,6 +33,3 @@ message GetAccount {
     string company_uuid = 1;
     string account_id = 2 [(lagompb.command).entity_id = true];
 }
-
-
-

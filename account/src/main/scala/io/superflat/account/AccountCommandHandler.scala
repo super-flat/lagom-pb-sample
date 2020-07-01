@@ -1,12 +1,12 @@
-package io.superflat.account
+package io.superflat.lagompb.samples.account
 
 import akka.actor.ActorSystem
 import com.google.protobuf.any.Any
-import io.superflat.protobuf.account.commands.{GetAccount, OpenBankAccount, ReceiveMoney, TransferMoney}
-import io.superflat.protobuf.account.events.{AccountOpened, MoneyReceived, MoneyTransferred}
-import io.superflat.protobuf.account.state.BankAccount
-import lagompb.core._
-import lagompb.{LagompbCommand, LagompbCommandHandler}
+import io.superflat.lagompb.samples.protobuf.account.commands.{GetAccount, OpenBankAccount, ReceiveMoney, TransferMoney}
+import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, MoneyReceived, MoneyTransferred}
+import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
+import io.superflat.lagompb.protobuf.core._
+import io.superflat.lagompb.{LagompbCommand, LagompbCommandHandler}
 
 import scala.util.Try
 

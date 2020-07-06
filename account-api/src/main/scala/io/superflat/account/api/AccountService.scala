@@ -4,10 +4,15 @@ import akka.NotUsed
 import com.lightbend.lagom.scaladsl.api.{Descriptor, ServiceCall}
 import com.lightbend.lagom.scaladsl.api.Service.restCall
 import com.lightbend.lagom.scaladsl.api.transport.Method
-import io.superflat.lagompb.samples.protobuf.account.apis.{ApiResponse, OpenAccountRequest, ReceiveMoneyRequest, TransferMoneyRequest}
-import io.superflat.lagompb.LagompbService
+import io.superflat.lagompb.samples.protobuf.account.apis.{
+  ApiResponse,
+  OpenAccountRequest,
+  ReceiveMoneyRequest,
+  TransferMoneyRequest
+}
+import io.superflat.lagompb.BaseService
 
-trait AccountService extends LagompbService {
+trait AccountService extends BaseService {
 
   def openAccount: ServiceCall[OpenAccountRequest, ApiResponse]
   def transferMoney(accountId: String): ServiceCall[TransferMoneyRequest, ApiResponse]

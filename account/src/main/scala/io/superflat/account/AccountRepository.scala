@@ -1,13 +1,13 @@
 package io.superflat.lagompb.samples.account
 
-import io.superflat.lagompb.readside.LagompbSlickPgRepository
+import lagompb.io.superflat.lagompb.readside.utils.SlickPgRepository
 import slick.jdbc.PostgresProfile
 import slick.jdbc.PostgresProfile.api._
 
 import scala.concurrent.Future
 
 class AccountRepository(database: Database)
-    extends LagompbSlickPgRepository[AccountTable, AccountEntity](TableQuery[AccountTable], database) {
+    extends SlickPgRepository[AccountTable, AccountEntity](TableQuery[AccountTable], database) {
 
   override def save(model: AccountEntity): Future[AccountEntity] = {
     val insert = query.returning(query) += model

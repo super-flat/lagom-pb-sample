@@ -7,12 +7,17 @@ import akka.NotUsed
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
 import com.lightbend.lagom.scaladsl.api.ServiceCall
 import com.lightbend.lagom.scaladsl.persistence.PersistentEntityRegistry
+import io.superflat.lagompb.{AggregateRoot, BaseServiceImpl, StateAndMeta}
 import io.superflat.lagompb.samples.account.api.AccountService
 import io.superflat.lagompb.samples.account.common._
-import io.superflat.lagompb.samples.protobuf.account.apis.{ApiResponse, OpenAccountRequest, ReceiveMoneyRequest, TransferMoneyRequest}
+import io.superflat.lagompb.samples.protobuf.account.apis.{
+  ApiResponse,
+  OpenAccountRequest,
+  ReceiveMoneyRequest,
+  TransferMoneyRequest
+}
 import io.superflat.lagompb.samples.protobuf.account.commands.{GetAccount, OpenBankAccount, ReceiveMoney, TransferMoney}
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
-import io.superflat.lagompb.{LagompbAggregate, LagompbServiceImpl, LagompbState}
 import scalapb.{GeneratedMessage, GeneratedMessageCompanion}
 
 import scala.concurrent.ExecutionContext
@@ -20,9 +25,9 @@ import scala.concurrent.ExecutionContext
 class AccountServiceImpl(
     clusterSharding: ClusterSharding,
     persistentEntityRegistry: PersistentEntityRegistry,
-    aggregate: LagompbAggregate[BankAccount]
+    aggregate: AggregateRoot[BankAccount]
 )(implicit ec: ExecutionContext)
-    extends LagompbServiceImpl(clusterSharding, persistentEntityRegistry, aggregate)
+    extends BaseServiceImpl(clusterSharding, persistentEntityRegistry, aggregate)
     with AccountService {
 
   override def aggregateStateCompanion: GeneratedMessageCompanion[_ <: GeneratedMessage] = BankAccount
@@ -65,7 +70,7 @@ class AccountServiceImpl(
       .map(getApiResponse)
   }
 
-  private def getApiResponse(data: LagompbState[BankAccount]): ApiResponse = {
+  private def getApiResponse(data: StateAndMeta[BankAccount]): ApiResponse = {
     ApiResponse().withData(data.state)
   }
 }

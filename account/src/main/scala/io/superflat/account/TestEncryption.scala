@@ -1,15 +1,15 @@
 package io.superflat.lagompb.samples.account
 
-import io.superflat.lagompb.encryption.{ProtoEncryption, NoEncryption, EncryptFailure, DecryptPermanentFailure}
-import io.superflat.lagompb.protobuf.encryption.EncryptedProto
-import io.superflat.lagompb.protobuf.core.EventWrapper
-import scala.util.{Try, Success, Failure}
-import akka.persistence.typed.EventAdapter
-import akka.persistence.typed.EventSeq
+import akka.persistence.typed.{EventAdapter, EventSeq}
 import com.google.protobuf.any.Any
-import com.google.protobuf.ByteString
+import io.superflat.lagompb.encryption.{DecryptPermanentFailure, EncryptFailure, NoEncryption, ProtoEncryption}
+import io.superflat.lagompb.protobuf.core.EventWrapper
+import io.superflat.lagompb.protobuf.encryption.EncryptedProto
+
+import scala.util.{Failure, Success, Try}
 
 class TestEncryption(encryptFailure: Option[Int] = None, decryptFailure: Option[Int] = None) extends ProtoEncryption {
+
   def encrypt(proto: com.google.protobuf.any.Any): Try[EncryptedProto] = {
     val eventWrapper: EventWrapper = proto.unpack(EventWrapper)
 

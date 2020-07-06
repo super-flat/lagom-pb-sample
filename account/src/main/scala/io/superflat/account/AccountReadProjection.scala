@@ -7,10 +7,10 @@ import akka.actor.ActorSystem
 import akka.actor.typed.scaladsl.adapter._
 import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, MoneyTransferred}
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
-import io.superflat.lagompb.LagompbException
+import io.superflat.lagompb.GlobalException
 import io.superflat.lagompb.encryption.ProtoEncryption
 import io.superflat.lagompb.protobuf.core.MetaData
-import io.superflat.lagompb.readside.LagompbSlickProjection
+import io.superflat.lagompb.readside.ReadSideProcessor
 import scalapb.{GeneratedMessage, GeneratedMessageCompanion}
 import slick.dbio.{DBIO, DBIOAction, Effect, NoStream}
 
@@ -24,19 +24,18 @@ import scala.concurrent.duration.Duration
  * @param repository
  * @param ec
  */
-class AccountReadProjection(encryptor: ProtoEncryption, actorSystem: ActorSystem, repository: AccountRepository)(implicit ec: ExecutionContext)
-    extends LagompbSlickProjection[BankAccount](encryptor)(ec, actorSystem.toTyped) {
+class AccountReadProjection(encryption: ProtoEncryption, actorSystem: ActorSystem, repository: AccountRepository)(
+    implicit ec: ExecutionContext
+) extends ReadSideProcessor[BankAccount](encryption)(ec, actorSystem.toTyped) {
   override def handle(event: GeneratedMessage, state: BankAccount, metaData: MetaData): DBIO[Done] = {
 
     event match {
       case e: AccountOpened => handleAccountOpened(e, state)
       case e: MoneyTransferred => handleMoneyTransferred(e, state)
       case _ =>
-        DBIOAction.failed(throw new LagompbException(s" event ${event.companion.scalaDescriptor.fullName} not handled"))
+        DBIOAction.failed(throw new GlobalException(s" event ${event.companion.scalaDescriptor.fullName} not handled"))
     }
   }
-
-  override def aggregateStateCompanion: GeneratedMessageCompanion[BankAccount] = BankAccount
 
   private def handleMoneyTransferred(
       event: MoneyTransferred,
@@ -90,6 +89,8 @@ class AccountReadProjection(encryptor: ProtoEncryption, actorSystem: ActorSystem
 
     DBIOAction.successful(Done)
   }
+
+  override def aggregateStateCompanion: GeneratedMessageCompanion[BankAccount] = BankAccount
 
   override def projectionName: String = "accounts-read-projection"
 }

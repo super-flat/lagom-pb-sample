@@ -10,29 +10,28 @@ import com.lightbend.lagom.scaladsl.server.{
   LagomServer
 }
 import com.softwaremill.macwire.wire
+import io.superflat.lagompb.{AggregateRoot, BaseApplication, CommandHandler, EventHandler}
+import io.superflat.lagompb.encryption.{NoEncryption, ProtoEncryption}
 import io.superflat.lagompb.samples.account.api.AccountService
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
-import io.superflat.lagompb.{LagompbAggregate, LagompbApplication, LagompbCommandHandler, LagompbEventHandler}
-import io.superflat.lagompb.encryption.{NoEncryption, ProtoEncryption}
 
-abstract class AccountApplication(context: LagomApplicationContext) extends LagompbApplication(context) {
+abstract class AccountApplication(context: LagomApplicationContext) extends BaseApplication(context) {
   // Let us hook in the readSide Processor
   lazy val accountRepository: AccountRepository =
     wire[AccountRepository]
 
   // wire up the various event and command handler
-  lazy val eventHandler: LagompbEventHandler[BankAccount] = wire[AccountEventHandler]
-  lazy val commandHandler: LagompbCommandHandler[BankAccount] = wire[AccountCommandHandler]
-  lazy val aggregate: LagompbAggregate[BankAccount] = wire[AccountAggregate]
+  lazy val eventHandler: EventHandler[BankAccount] = wire[AccountEventHandler]
+  lazy val commandHandler: CommandHandler[BankAccount] = wire[AccountCommandHandler]
+  lazy val aggregate: AggregateRoot[BankAccount] = wire[AccountAggregate]
+  lazy val encryptor: ProtoEncryption = NoEncryption
+  lazy val accountProjection: AccountReadProjection = wire[AccountReadProjection]
 
-  override def aggregateRoot: LagompbAggregate[_] = aggregate
+  override def aggregateRoot: AggregateRoot[_] = aggregate
 
   override def server: LagomServer =
     serverFor[AccountService](wire[AccountServiceImpl])
       .additionalRouter(wire[AccountGrpcServiceImpl])
-
-  lazy val encryptor: ProtoEncryption = NoEncryption
-  lazy val accountProjection: AccountReadProjection = wire[AccountReadProjection]
   // lazy val accountKafkaProjection: AccountKafkaProjection = wire[AccountKafkaProjection]
 
   accountProjection.init()

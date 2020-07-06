@@ -2,15 +2,24 @@ package io.superflat.lagompb.samples.account
 
 import akka.actor.ActorSystem
 import com.google.protobuf.any.Any
+import io.superflat.lagompb.{Command, CommandHandler}
+import io.superflat.lagompb.protobuf.core._
 import io.superflat.lagompb.samples.protobuf.account.commands.{GetAccount, OpenBankAccount, ReceiveMoney, TransferMoney}
 import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, MoneyReceived, MoneyTransferred}
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
-import io.superflat.lagompb.protobuf.core._
-import io.superflat.lagompb.{LagompbCommand, LagompbCommandHandler}
 
 import scala.util.Try
 
-class AccountCommandHandler(actorSystem: ActorSystem) extends LagompbCommandHandler[BankAccount](actorSystem) {
+class AccountCommandHandler(actorSystem: ActorSystem) extends CommandHandler[BankAccount](actorSystem) {
+
+  override def handle(command: Command, state: BankAccount, eventMeta: MetaData): Try[CommandHandlerResponse] = {
+    command.command match {
+      case o: OpenBankAccount => Try(handleOpenAccount(o, state))
+      case r: ReceiveMoney => Try(handleReceiveMoney(r, state))
+      case t: TransferMoney => Try(handleTransferMoney(t, state))
+      case g: GetAccount => Try(handleGetAccount(g, state))
+    }
+  }
 
   private def handleGetAccount(g: GetAccount, bankAccount: BankAccount): CommandHandlerResponse = {
     if (!g.accountId.equals(bankAccount.accountId)) {
@@ -80,15 +89,6 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends LagompbCommandHand
           SuccessCommandHandlerResponse()
             .withEvent(Any.pack(AccountOpened(cmd.companyUuid, cmd.accountId, cmd.balance, cmd.accountOwner)))
         )
-    }
-  }
-
-  override def handle(command: LagompbCommand, state: BankAccount, eventMeta: MetaData): Try[CommandHandlerResponse] = {
-    command.command match {
-      case o: OpenBankAccount => Try(handleOpenAccount(o, state))
-      case r: ReceiveMoney => Try(handleReceiveMoney(r, state))
-      case t: TransferMoney => Try(handleTransferMoney(t, state))
-      case g: GetAccount => Try(handleGetAccount(g, state))
     }
   }
 }

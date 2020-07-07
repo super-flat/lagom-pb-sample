@@ -11,7 +11,8 @@ object ProtoRuntime extends AutoPlugin {
         Compile.lagompb,
         Compile.scalapbCommon,
         Runtime.lagompbRuntime,
-        Runtime.scalapbCommonProtos
+        Runtime.scalapbCommonProtos,
+        Runtime.scalapbValidationRuntime
       )
     )
 }

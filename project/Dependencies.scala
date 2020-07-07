@@ -7,8 +7,7 @@ object Dependencies {
 
   object Versions {
     val scala213 = "2.13.1"
-    // val lagompbVersion = "0.2.0"
-    val lagompbVersion = "0.3.0+3-b74e254b-SNAPSHOT"
+    val lagompbVersion = "0.4.0"
     val akkaVersion: String = "2.6.6"
     val scalapbCommonProtosVersion: String = "1.18.0-0"
     val silencerVersion = "1.6.0"
@@ -24,6 +23,7 @@ object Dependencies {
 
   object Runtime {
     val lagompbRuntime: ModuleID = "io.superflat" %% "lagompb-core" % Versions.lagompbVersion % "protobuf"
+    val scalapbValidationRuntime = "com.thesamet.scalapb" %% "scalapb-validate-core" % scalapb.validate.compiler.BuildInfo.version % "protobuf"
 
     val scalapbCommonProtos
       : ModuleID = "com.thesamet.scalapb.common-protos" %% "proto-google-common-protos-scalapb_0.10" % Versions.scalapbCommonProtosVersion % "protobuf"

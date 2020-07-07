@@ -6,30 +6,31 @@ option java_package = "io.superflat.lagompb.samples.protobuf.account";
 
 import "google/protobuf/timestamp.proto";
 import "lagompb/extensions.proto";
+import "validate/validate.proto";
 
 message OpenBankAccount {
-    string company_uuid = 1;
-    string account_id = 2 [(lagompb.command).entity_id = true];
-    double balance = 3;
+    string company_uuid = 1 [(validate.rules).string.uuid = true];
+    string account_id = 2 [(lagompb.command).entity_id = true, (validate.rules).string.uuid = true];
+    double balance = 3 [(validate.rules).double.gte = 200];
     string account_owner = 4;
     google.protobuf.Timestamp opened_at = 5;
 }
 
 message TransferMoney {
-    string company_uuid = 1;
-    string account_id = 2 [(lagompb.command).entity_id = true];
-    double amount = 3;
+    string company_uuid = 1 [(validate.rules).string.uuid = true];
+    string account_id = 2 [(lagompb.command).entity_id = true, (validate.rules).string.uuid = true];
+    double amount = 3 [(validate.rules).double.gte = 0];
     google.protobuf.Timestamp transferred_at = 5;
 }
 
 message ReceiveMoney {
-    string company_uuid = 1;
-    string account_id = 2 [(lagompb.command).entity_id = true];
-    double amount = 3;
+    string company_uuid = 1 [(validate.rules).string.uuid = true];
+    string account_id = 2 [(lagompb.command).entity_id = true, (validate.rules).string.uuid = true];
+    double amount = 3 [(validate.rules).double.gte = 0];
     google.protobuf.Timestamp received_at = 5;
 }
 
 message GetAccount {
-    string company_uuid = 1;
-    string account_id = 2 [(lagompb.command).entity_id = true];
+    string company_uuid = 1 [(validate.rules).string.uuid = true];
+    string account_id = 2 [(lagompb.command).entity_id = true, (validate.rules).string.uuid = true];
 }

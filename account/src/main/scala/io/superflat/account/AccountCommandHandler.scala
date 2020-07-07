@@ -2,11 +2,20 @@ package io.superflat.lagompb.samples.account
 
 import akka.actor.ActorSystem
 import com.google.protobuf.any.Any
+import io.envoyproxy.pgv.ValidationException
 import io.superflat.lagompb.{Command, CommandHandler}
 import io.superflat.lagompb.protobuf.core._
-import io.superflat.lagompb.samples.protobuf.account.commands.{GetAccount, OpenBankAccount, ReceiveMoney, TransferMoney}
+import io.superflat.lagompb.samples.protobuf.account.commands.{
+  GetAccount,
+  OpenBankAccount,
+  OpenBankAccountValidator,
+  ReceiveMoney,
+  TransferMoney,
+  TransferMoneyValidator
+}
 import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, MoneyReceived, MoneyTransferred}
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
+import scalapb.validate.{Failure, Success}
 
 import scala.util.Try
 
@@ -39,31 +48,42 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends CommandHandler[Ban
   }
 
   private def handleTransferMoney(cmd: TransferMoney, bankAccount: BankAccount): CommandHandlerResponse = {
-    val currentBal: Double = bankAccount.accountBalance
-    val allowed: Double = currentBal - cmd.amount
-    if (allowed <= 200) {
-      CommandHandlerResponse()
-        .withFailedResponse(
-          FailedCommandHandlerResponse()
-            .withCause(FailureCause.ValidationError)
-            .withReason("insufficient balance")
-        )
+    TransferMoneyValidator.validate(cmd) match {
+      case Success =>
+        val currentBal: Double = bankAccount.accountBalance
+        val allowed: Double = currentBal - cmd.amount
+        if (allowed <= 200) {
+          CommandHandlerResponse()
+            .withFailedResponse(
+              FailedCommandHandlerResponse()
+                .withCause(FailureCause.ValidationError)
+                .withReason("insufficient balance")
+            )
 
-    } else {
-      if (!cmd.accountId.equals(bankAccount.accountId)) {
+        } else {
+          if (!cmd.accountId.equals(bankAccount.accountId)) {
+            CommandHandlerResponse()
+              .withFailedResponse(
+                FailedCommandHandlerResponse()
+                  .withCause(FailureCause.InternalError)
+                  .withReason("Send command to the wrong entity")
+              )
+          } else {
+            CommandHandlerResponse()
+              .withSuccessResponse(
+                SuccessCommandHandlerResponse()
+                  .withEvent(Any.pack(MoneyTransferred(cmd.companyUuid, cmd.accountId, cmd.amount)))
+              )
+          }
+        }
+
+      case Failure(violation) =>
         CommandHandlerResponse()
           .withFailedResponse(
             FailedCommandHandlerResponse()
-              .withCause(FailureCause.InternalError)
-              .withReason("Send command to the wrong entity")
+              .withCause(FailureCause.ValidationError)
+              .withReason(violation.getMessage)
           )
-      } else {
-        CommandHandlerResponse()
-          .withSuccessResponse(
-            SuccessCommandHandlerResponse()
-              .withEvent(Any.pack(MoneyTransferred(cmd.companyUuid, cmd.accountId, cmd.amount)))
-          )
-      }
     }
   }
 
@@ -75,20 +95,22 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends CommandHandler[Ban
       )
 
   private def handleOpenAccount(cmd: OpenBankAccount, state: BankAccount): CommandHandlerResponse = {
-    if (cmd.balance < 200) {
-      CommandHandlerResponse()
-        .withFailedResponse(
-          FailedCommandHandlerResponse()
-            .withCause(FailureCause.ValidationError)
-            .withReason(s"opening balance ${cmd.balance} is below the 200 minimum required")
-        )
+    // let us validate the command
+    OpenBankAccountValidator.validate(cmd) match {
+      case Success =>
+        CommandHandlerResponse()
+          .withSuccessResponse(
+            SuccessCommandHandlerResponse()
+              .withEvent(Any.pack(AccountOpened(cmd.companyUuid, cmd.accountId, cmd.balance, cmd.accountOwner)))
+          )
 
-    } else {
-      CommandHandlerResponse()
-        .withSuccessResponse(
-          SuccessCommandHandlerResponse()
-            .withEvent(Any.pack(AccountOpened(cmd.companyUuid, cmd.accountId, cmd.balance, cmd.accountOwner)))
-        )
+      case Failure(violation: ValidationException) =>
+        CommandHandlerResponse()
+          .withFailedResponse(
+            FailedCommandHandlerResponse()
+              .withCause(FailureCause.ValidationError)
+              .withReason(s"opening balance ${cmd.balance} is below the 200 minimum required")
+          )
     }
   }
 }

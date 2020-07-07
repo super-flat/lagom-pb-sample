@@ -26,7 +26,10 @@ lazy val `account-common` = project
     inConfig(Compile)(
       Seq(
         PB.protoSources ++= Seq(file("account-common/src/main/protobuf")),
-        PB.includePaths ++= Seq(file("account-common/src/main/protobuf"))
+        PB.includePaths ++= Seq(file("account-common/src/main/protobuf")),
+        PB.targets ++= Seq(
+          scalapb.validate.gen() -> (sourceManaged in Compile).value
+        )
       )
     ),
     // Using Scala

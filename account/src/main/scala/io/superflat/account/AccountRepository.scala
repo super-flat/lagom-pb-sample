@@ -1,6 +1,6 @@
 package io.superflat.lagompb.samples.account
 
-import lagompb.io.superflat.lagompb.readside.utils.SlickPgRepository
+import io.superflat.lagompb.readside.utils.SlickPgRepository
 import slick.jdbc.PostgresProfile
 import slick.jdbc.PostgresProfile.api._
 

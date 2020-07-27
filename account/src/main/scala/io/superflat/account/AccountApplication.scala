@@ -25,17 +25,18 @@ abstract class AccountApplication(context: LagomApplicationContext) extends Base
   lazy val commandHandler: CommandHandler[BankAccount] = wire[AccountCommandHandler]
   lazy val aggregate: AggregateRoot[BankAccount] = wire[AccountAggregate]
   lazy val encryptor: ProtoEncryption = NoEncryption
-  lazy val accountProjection: AccountReadProjection = wire[AccountReadProjection]
 
   override def aggregateRoot: AggregateRoot[_] = aggregate
 
   override def server: LagomServer =
     serverFor[AccountService](wire[AccountServiceImpl])
       .additionalRouter(wire[AccountGrpcServiceImpl])
-  // lazy val accountKafkaProjection: AccountKafkaProjection = wire[AccountKafkaProjection]
 
-  accountProjection.init()
-  // accountKafkaProjection.init()
+  lazy val accountReadProcessor: AccountReadProcessor = wire[AccountReadProcessor]
+  lazy val kafkaPublisher: AccountKafkaPublisher = wire[AccountKafkaPublisher]
+
+  accountReadProcessor.init()
+  kafkaPublisher.init()
 }
 
 class AccountApplicationLoader extends LagomApplicationLoader {

@@ -1,4 +1,4 @@
-addSbtPlugin("io.superflat" % "lagompb-plugin" % "0.4.0+17-a73c3d7b-SNAPSHOT")
+addSbtPlugin("io.superflat" % "lagompb-plugin" % "0.4.0+24-e0e88d0b-SNAPSHOT")
 addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.7.3")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.0")

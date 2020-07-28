@@ -11,12 +11,6 @@ object LagomImpl extends AutoPlugin {
   override def projectSettings = Seq(
     version := sys.env.getOrElse("VERSION", "development"),
     dockerBaseImage := "openjdk:11",
-    libraryDependencies ++= Seq(
-      Compile.lagompb,
-      Compile.lagompbReadSide,
-      Compile.scalapbCommon,
-      Runtime.lagompbRuntime,
-      Runtime.scalapbCommonProtos
-    )
+    libraryDependencies ++= Seq(Compile.lagompb, Compile.lagompbReadSide, Runtime.lagompbRuntime)
   )
 }

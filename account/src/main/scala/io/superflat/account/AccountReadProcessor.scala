@@ -9,9 +9,8 @@ import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, Mone
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
 import io.superflat.lagompb.GlobalException
 import io.superflat.lagompb.encryption.ProtoEncryption
-import io.superflat.lagompb.protobuf.core.MetaData
-import io.superflat.lagompb.readside.ReadSideProcessor
-import scalapb.{GeneratedMessage, GeneratedMessageCompanion}
+import io.superflat.lagompb.readside.{ReadSideEvent, ReadSideProcessor}
+import scalapb.GeneratedMessageCompanion
 import slick.dbio.{DBIO, DBIOAction, Effect, NoStream}
 
 import scala.concurrent.{Await, ExecutionContext}
@@ -24,10 +23,14 @@ import scala.concurrent.duration.Duration
  * @param repository
  * @param ec
  */
-class AccountReadProjection(encryption: ProtoEncryption, actorSystem: ActorSystem, repository: AccountRepository)(
+class AccountReadProcessor(encryption: ProtoEncryption, actorSystem: ActorSystem, repository: AccountRepository)(
     implicit ec: ExecutionContext
 ) extends ReadSideProcessor[BankAccount](encryption)(ec, actorSystem.toTyped) {
-  override def handle(event: GeneratedMessage, state: BankAccount, metaData: MetaData): DBIO[Done] = {
+  override def handle(readSideEvent: ReadSideEvent[BankAccount]): DBIO[Done] = {
+    val event = readSideEvent.event
+    val state = readSideEvent.state
+
+    log.info(s"Processing event from Tag ${readSideEvent.eventTag}")
 
     event match {
       case e: AccountOpened => handleAccountOpened(e, state)

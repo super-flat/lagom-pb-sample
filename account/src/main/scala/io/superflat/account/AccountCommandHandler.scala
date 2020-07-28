@@ -5,14 +5,7 @@ import com.google.protobuf.any.Any
 import io.envoyproxy.pgv.ValidationException
 import io.superflat.lagompb.{Command, CommandHandler}
 import io.superflat.lagompb.protobuf.core._
-import io.superflat.lagompb.samples.protobuf.account.commands.{
-  GetAccount,
-  OpenBankAccount,
-  OpenBankAccountValidator,
-  ReceiveMoney,
-  TransferMoney,
-  TransferMoneyValidator
-}
+import io.superflat.lagompb.samples.protobuf.account.commands._
 import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, MoneyReceived, MoneyTransferred}
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
 import scalapb.validate.{Failure, Success}

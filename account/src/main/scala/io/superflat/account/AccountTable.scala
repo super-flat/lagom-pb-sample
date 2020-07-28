@@ -2,7 +2,7 @@ package io.superflat.lagompb.samples.account
 
 import java.time.Instant
 
-import lagompb.io.superflat.lagompb.readside.utils.SlickBasedTable
+import io.superflat.lagompb.readside.utils.SlickBasedTable
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.{ProvenShape, Rep}
 

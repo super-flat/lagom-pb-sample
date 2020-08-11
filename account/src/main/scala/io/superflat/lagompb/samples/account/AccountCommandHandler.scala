@@ -23,7 +23,7 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends CommandHandler[Ban
     }
   }
 
-  private def handleGetAccount(g: GetAccount, bankAccount: BankAccount): CommandHandlerResponse = {
+  private[account] def handleGetAccount(g: GetAccount, bankAccount: BankAccount): CommandHandlerResponse = {
     if (!g.accountId.equals(bankAccount.accountId)) {
       CommandHandlerResponse()
         .withFailedResponse(
@@ -40,7 +40,7 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends CommandHandler[Ban
     }
   }
 
-  private def handleTransferMoney(cmd: TransferMoney, bankAccount: BankAccount): CommandHandlerResponse = {
+  private[account] def handleTransferMoney(cmd: TransferMoney, bankAccount: BankAccount): CommandHandlerResponse = {
     TransferMoneyValidator.validate(cmd) match {
       case Success =>
         val currentBal: Double = bankAccount.accountBalance
@@ -80,14 +80,14 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends CommandHandler[Ban
     }
   }
 
-  private def handleReceiveMoney(cmd: ReceiveMoney, bankAccount: BankAccount): CommandHandlerResponse =
+  private[account] def handleReceiveMoney(cmd: ReceiveMoney, bankAccount: BankAccount): CommandHandlerResponse =
     CommandHandlerResponse()
       .withSuccessResponse(
         SuccessCommandHandlerResponse()
           .withEvent(Any.pack(MoneyReceived(cmd.companyUuid, cmd.accountId, cmd.amount)))
       )
 
-  private def handleOpenAccount(cmd: OpenBankAccount, state: BankAccount): CommandHandlerResponse = {
+  private[account] def handleOpenAccount(cmd: OpenBankAccount, state: BankAccount): CommandHandlerResponse = {
     // let us validate the command
     OpenBankAccountValidator.validate(cmd) match {
       case Success =>

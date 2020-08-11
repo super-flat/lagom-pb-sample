@@ -8,7 +8,7 @@ import akka.actor.typed.scaladsl.adapter._
 import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, MoneyTransferred}
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
 import io.superflat.lagompb.GlobalException
-import io.superflat.lagompb.encryption.ProtoEncryption
+import io.superflat.lagompb.encryption.EncryptionAdapter
 import io.superflat.lagompb.readside.{ReadSideEvent, ReadSideProcessor}
 import scalapb.GeneratedMessageCompanion
 import slick.dbio.{DBIO, DBIOAction, Effect, NoStream}
@@ -16,16 +16,12 @@ import slick.dbio.{DBIO, DBIOAction, Effect, NoStream}
 import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 
-/**
- * This is to illustrate how to implement a readSide with lagom-pb using akka projection
- *
- * @param actorSystem
- * @param repository
- * @param ec
- */
-class AccountReadProcessor(encryption: ProtoEncryption, actorSystem: ActorSystem, repository: AccountRepository)(
-    implicit ec: ExecutionContext
-) extends ReadSideProcessor[BankAccount](encryption)(ec, actorSystem.toTyped) {
+class AccountReadProcessor(
+    actorSystem: ActorSystem,
+    repository: AccountRepository,
+    encryptionAdapter: EncryptionAdapter
+)(implicit ec: ExecutionContext)
+    extends ReadSideProcessor[BankAccount](encryptionAdapter)(ec, actorSystem.toTyped) {
   override def handle(readSideEvent: ReadSideEvent[BankAccount]): DBIO[Done] = {
     val event = readSideEvent.event
     val state = readSideEvent.state

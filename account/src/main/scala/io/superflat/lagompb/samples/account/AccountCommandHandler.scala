@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import com.google.protobuf.any.Any
 import io.envoyproxy.pgv.ValidationException
 import io.superflat.lagompb.{Command, CommandHandler}
-import io.superflat.lagompb.protobuf.core._
+import io.superflat.lagompb.protobuf.v1.core._
 import io.superflat.lagompb.samples.protobuf.account.commands._
 import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, MoneyReceived, MoneyTransferred}
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
@@ -28,7 +28,7 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends CommandHandler[Ban
       CommandHandlerResponse()
         .withFailedResponse(
           FailedCommandHandlerResponse()
-            .withCause(FailureCause.InternalError)
+            .withCause(FailureCause.INTERNAL_ERROR)
             .withReason("Send command to the wrong entity")
         )
     } else {
@@ -49,7 +49,7 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends CommandHandler[Ban
           CommandHandlerResponse()
             .withFailedResponse(
               FailedCommandHandlerResponse()
-                .withCause(FailureCause.ValidationError)
+                .withCause(FailureCause.VALIDATION_ERROR)
                 .withReason("insufficient balance")
             )
 
@@ -58,7 +58,7 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends CommandHandler[Ban
             CommandHandlerResponse()
               .withFailedResponse(
                 FailedCommandHandlerResponse()
-                  .withCause(FailureCause.InternalError)
+                  .withCause(FailureCause.INTERNAL_ERROR)
                   .withReason("Send command to the wrong entity")
               )
           } else {
@@ -74,7 +74,7 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends CommandHandler[Ban
         CommandHandlerResponse()
           .withFailedResponse(
             FailedCommandHandlerResponse()
-              .withCause(FailureCause.ValidationError)
+              .withCause(FailureCause.VALIDATION_ERROR)
               .withReason(violation.getMessage)
           )
     }
@@ -101,7 +101,7 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends CommandHandler[Ban
         CommandHandlerResponse()
           .withFailedResponse(
             FailedCommandHandlerResponse()
-              .withCause(FailureCause.ValidationError)
+              .withCause(FailureCause.VALIDATION_ERROR)
               .withReason(s"opening balance ${cmd.balance} is below the 200 minimum required")
           )
     }

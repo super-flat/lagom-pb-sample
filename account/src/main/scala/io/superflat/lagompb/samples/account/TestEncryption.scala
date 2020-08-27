@@ -3,8 +3,8 @@ package io.superflat.lagompb.samples.account
 import akka.persistence.typed.{EventAdapter, EventSeq}
 import com.google.protobuf.any.Any
 import io.superflat.lagompb.encryption.{DecryptPermanentFailure, EncryptFailure, NoEncryption, ProtoEncryption}
-import io.superflat.lagompb.protobuf.core.EventWrapper
-import io.superflat.lagompb.protobuf.encryption.EncryptedProto
+import io.superflat.lagompb.protobuf.v1.core.EventWrapper
+import io.superflat.lagompb.protobuf.v1.encryption.EncryptedProto
 
 import scala.util.{Failure, Success, Try}
 

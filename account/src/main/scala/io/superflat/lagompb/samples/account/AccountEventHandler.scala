@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, MoneyReceived, MoneyTransferred}
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
 import io.superflat.lagompb.EventHandler
-import io.superflat.lagompb.protobuf.core.MetaData
+import io.superflat.lagompb.protobuf.v1.core.MetaData
 
 class AccountEventHandler(actorSystem: ActorSystem) extends EventHandler[BankAccount](actorSystem) {
 

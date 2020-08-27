@@ -16,17 +16,17 @@ lazy val `account-common` = project
   .settings(
     inConfig(Compile)(
       Seq(
-        PB.protoSources ++= Seq(file("account-common/src/main/protobuf")),
-        PB.includePaths ++= Seq(file("account-common/src/main/protobuf")),
-        PB.targets ++= Seq(scalapb.validate.gen() -> (sourceManaged in Compile).value)
+        PB.protoSources := Seq(file("account-common/src/main/protobuf")),
+        PB.includePaths ++= Seq(file("account-common/src/main/protobuf"), file("submodules/protobuf")),
+        PB.targets ++= Seq(scalapb.validate.gen() -> (sourceManaged in Compile).value / "scalapb")
       )
     ),
     // Using Scala
     akkaGrpcGeneratedLanguages := Seq(AkkaGrpc.Scala),
     akkaGrpcExtraGenerators in Compile += PlayScalaServerCodeGenerator,
-    akkaGrpcExtraGenerators in Compile += PlayScalaClientCodeGenerator,
     akkaGrpcCodeGeneratorSettings += "server_power_apis",
-    akkaGrpcCodeGeneratorSettings := akkaGrpcCodeGeneratorSettings.value.filterNot(_ == "flat_package")
+    akkaGrpcCodeGeneratorSettings := akkaGrpcCodeGeneratorSettings.value.filterNot(_ == "flat_package"),
+    target in akkaGrpcCodeGeneratorSettings in Compile := (sourceManaged in Compile).value / "scalapb"
   )
 
 lazy val `account-api` = project

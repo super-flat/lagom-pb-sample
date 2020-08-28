@@ -17,6 +17,8 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Bump Git Submodules
+      uses: domdere/git-submodule-action@0.0.1
     - name: Run tests
       run: sbt test
     - name: Compile

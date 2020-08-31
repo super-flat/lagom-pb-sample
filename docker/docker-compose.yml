@@ -28,6 +28,7 @@ services:
     hostname: "account"
     depends_on:
       - postgres
+      - tracer
     ports:
       - 9000:9000
       - 9102:9102
@@ -36,8 +37,8 @@ services:
     environment:
       HTTP_ADDRESS: "0.0.0.0"
       HTTP_PORT: 9000
-      TRACE_HOST: tracer
-      TRACE_PORT: 14268
+      TRACER_HOST: tracer
+      TRACER_PORT: 14268
       SERVICE_NAME: "account"
       REQUIRED_CONTACT_POINT_NR: 1
       EVENTS_BATCH_THRESHOLD: 2

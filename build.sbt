@@ -32,7 +32,6 @@ lazy val `account-common` = project
 lazy val `account-api` = project
   .in(file("account-api"))
   .enablePlugins(LagomApi)
-  .enablePlugins(LagomAkka)
   .settings(name := "account-api")
   .dependsOn(`account-common`)
 
@@ -40,8 +39,8 @@ lazy val `account` = project
   .in(file("account"))
   .enablePlugins(LagomScala, JavaAgent)
   .enablePlugins(JavaAppPackaging)
-  .enablePlugins(PlayAkkaHttp2Support)
   .enablePlugins(LagomImpl)
-  .enablePlugins(LagomAkka)
-  .settings(name := "account")
+  .settings(name := "account",
+    javaAgents += "io.kamon" % "kanela-agent" %"1.0.6"
+  )
   .dependsOn(`account-api`)

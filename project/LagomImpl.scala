@@ -5,6 +5,8 @@ import io.superflat.Dependencies.{Compile, Runtime}
 import sbt.{plugins, AutoPlugin, Plugins}
 import sbt.Keys.{libraryDependencies, version}
 
+import com.lightbend.sbt.javaagent.JavaAgent.JavaAgentKeys.javaAgents
+
 object LagomImpl extends AutoPlugin {
   override def requires: Plugins = plugins.JvmPlugin
 

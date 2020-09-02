@@ -3,7 +3,7 @@ package io.superflat.lagompb.samples.account
 import java.util.UUID
 
 import com.google.protobuf.any.Any
-import io.superflat.lagompb.protobuf.core.{CommandHandlerResponse, SuccessCommandHandlerResponse}
+import io.superflat.lagompb.protobuf.v1.core.{CommandHandlerResponse, SuccessCommandHandlerResponse}
 import io.superflat.lagompb.samples.protobuf.account.commands.OpenBankAccount
 import io.superflat.lagompb.samples.protobuf.account.events.AccountOpened
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount

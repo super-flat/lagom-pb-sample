@@ -8,8 +8,8 @@ import scalapb.GeneratedMessageCompanion
 
 final class AccountAggregate(
     actorSystem: ActorSystem,
-    commandHandler: CommandHandler[BankAccount],
-    eventHandler: EventHandler[BankAccount],
+    commandHandler: CommandHandler,
+    eventHandler: EventHandler,
     encryptionAdapter: EncryptionAdapter
 ) extends AggregateRoot[BankAccount](actorSystem, commandHandler, eventHandler, encryptionAdapter) {
 

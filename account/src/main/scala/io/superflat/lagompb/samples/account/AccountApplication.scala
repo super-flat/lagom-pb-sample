@@ -21,8 +21,8 @@ abstract class AccountApplication(context: LagomApplicationContext) extends Base
     wire[AccountRepository]
 
   // wire up the various event and command handler
-  lazy val eventHandler: EventHandler[BankAccount] = wire[AccountEventHandler]
-  lazy val commandHandler: CommandHandler[BankAccount] = wire[AccountCommandHandler]
+  lazy val eventHandler: EventHandler = wire[AccountEventHandler]
+  lazy val commandHandler: CommandHandler = wire[AccountCommandHandler]
   lazy val aggregate: AggregateRoot[BankAccount] = wire[AccountAggregate]
   lazy val encryptor: ProtoEncryption = NoEncryption
 

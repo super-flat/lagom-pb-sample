@@ -20,3 +20,5 @@ project/metals.sbt
 .env
 .DS_Store
 *.iml
+.vscode/
+metals.sbt

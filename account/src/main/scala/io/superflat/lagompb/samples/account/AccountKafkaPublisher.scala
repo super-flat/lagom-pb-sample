@@ -11,8 +11,7 @@ import scala.concurrent.ExecutionContext
 
 class AccountKafkaPublisher(actorSystem: ActorSystem, encryptionAdapter: EncryptionAdapter)(
     implicit ec: ExecutionContext
-) extends KafkaPublisher[BankAccount](encryptionAdapter)(ec, actorSystem.toTyped) {
-  override def aggregateStateCompanion: GeneratedMessageCompanion[BankAccount] = BankAccount
+) extends KafkaPublisher(encryptionAdapter)(ec, actorSystem.toTyped) {
 
   override def projectionName: String = "accounts-kafka-projection"
 }

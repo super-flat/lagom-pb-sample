@@ -9,8 +9,9 @@ import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, Mone
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
 import io.superflat.lagompb.GlobalException
 import io.superflat.lagompb.encryption.EncryptionAdapter
-import io.superflat.lagompb.readside.{ReadSideEvent, ReadSideProcessor}
-import scalapb.GeneratedMessageCompanion
+import io.superflat.lagompb.protobuf.v1.core.MetaData
+import io.superflat.lagompb.readside.{ReadSideEvent, ReadSideProcessor, TypedReadSideProcessor}
+import scalapb.{GeneratedMessage, GeneratedMessageCompanion}
 import slick.dbio.{DBIO, DBIOAction, Effect, NoStream}
 
 import scala.concurrent.{Await, ExecutionContext}
@@ -21,20 +22,20 @@ class AccountReadProcessor(
     repository: AccountRepository,
     encryptionAdapter: EncryptionAdapter
 )(implicit ec: ExecutionContext)
-    extends ReadSideProcessor[BankAccount](encryptionAdapter)(ec, actorSystem.toTyped) {
-  override def handle(readSideEvent: ReadSideEvent[BankAccount]): DBIO[Done] = {
-    val event = readSideEvent.event
-    val state = readSideEvent.state
+    extends TypedReadSideProcessor(encryptionAdapter)(ec, actorSystem.toTyped) {
 
-    log.info(s"Processing event from Tag ${readSideEvent.eventTag}")
+  override def handleTyped(event: GeneratedMessage, eventTag: String, state: GeneratedMessage, metaData: MetaData): DBIO[Done] = {
+    log.info(s"Processing event from Tag ${eventTag}")
 
     event match {
-      case e: AccountOpened => handleAccountOpened(e, state)
-      case e: MoneyTransferred => handleMoneyTransferred(e, state)
+      case e: AccountOpened => handleAccountOpened(e, state.asInstanceOf[BankAccount])
+      case e: MoneyTransferred => handleMoneyTransferred(e, state.asInstanceOf[BankAccount])
       case _ =>
         DBIOAction.failed(throw new GlobalException(s" event ${event.companion.scalaDescriptor.fullName} not handled"))
     }
   }
+
+
 
   private def handleMoneyTransferred(
       event: MoneyTransferred,
@@ -89,7 +90,6 @@ class AccountReadProcessor(
     DBIOAction.successful(Done)
   }
 
-  override def aggregateStateCompanion: GeneratedMessageCompanion[BankAccount] = BankAccount
 
   override def projectionName: String = "accounts-read-projection"
 }

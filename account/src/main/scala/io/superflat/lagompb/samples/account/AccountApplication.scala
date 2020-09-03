@@ -3,14 +3,9 @@ package io.superflat.lagompb.samples.account
 import com.lightbend.lagom.scaladsl.akka.discovery.AkkaDiscoveryComponents
 import com.lightbend.lagom.scaladsl.api.Descriptor
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
-import com.lightbend.lagom.scaladsl.server.{
-  LagomApplication,
-  LagomApplicationContext,
-  LagomApplicationLoader,
-  LagomServer
-}
+import com.lightbend.lagom.scaladsl.server.{LagomApplication, LagomApplicationContext, LagomApplicationLoader, LagomServer}
 import com.softwaremill.macwire.wire
-import io.superflat.lagompb.{AggregateRoot, BaseApplication, CommandHandler, EventHandler}
+import io.superflat.lagompb.{AggregateRoot, BaseApplication, CommandHandler, EventHandler, TypedCommandHandler, TypedEventHandler}
 import io.superflat.lagompb.encryption.{NoEncryption, ProtoEncryption}
 import io.superflat.lagompb.samples.account.api.AccountService
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
@@ -21,8 +16,8 @@ abstract class AccountApplication(context: LagomApplicationContext) extends Base
     wire[AccountRepository]
 
   // wire up the various event and command handler
-  lazy val eventHandler: EventHandler[BankAccount] = wire[AccountEventHandler]
-  lazy val commandHandler: CommandHandler[BankAccount] = wire[AccountCommandHandler]
+  lazy val eventHandler: TypedEventHandler[BankAccount] = wire[AccountEventHandler]
+  lazy val commandHandler: TypedCommandHandler[BankAccount] = wire[AccountCommandHandler]
   lazy val aggregate: AggregateRoot[BankAccount] = wire[AccountAggregate]
   lazy val encryptor: ProtoEncryption = NoEncryption
 

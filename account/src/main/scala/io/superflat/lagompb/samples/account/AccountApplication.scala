@@ -3,14 +3,24 @@ package io.superflat.lagompb.samples.account
 import com.lightbend.lagom.scaladsl.akka.discovery.AkkaDiscoveryComponents
 import com.lightbend.lagom.scaladsl.api.Descriptor
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
-import com.lightbend.lagom.scaladsl.server.{LagomApplication, LagomApplicationContext, LagomApplicationLoader, LagomServer}
+import com.lightbend.lagom.scaladsl.server.{
+  LagomApplication,
+  LagomApplicationContext,
+  LagomApplicationLoader,
+  LagomServer
+}
 import com.softwaremill.macwire.wire
-import io.superflat.lagompb.{AggregateRoot, BaseApplication, CommandHandler, EventHandler, TypedCommandHandler, TypedEventHandler}
 import io.superflat.lagompb.encryption.{NoEncryption, ProtoEncryption}
 import io.superflat.lagompb.samples.account.api.AccountService
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
+import io.superflat.lagompb.{AggregateRoot, BaseApplication, TypedCommandHandler, TypedEventHandler}
+import kamon.Kamon
 
 abstract class AccountApplication(context: LagomApplicationContext) extends BaseApplication(context) {
+  // These lines are only necessary when doing compile-time dependency injection. When using Guice, a GuiceModule that
+  // is included in kamon-play should be automatically picked up and configured.
+  Kamon.reconfigure(context.playContext.initialConfiguration.underlying)
+
   // Let us hook in the readSide Processor
   lazy val accountRepository: AccountRepository =
     wire[AccountRepository]
@@ -18,12 +28,12 @@ abstract class AccountApplication(context: LagomApplicationContext) extends Base
   // wire up the various event and command handler
   lazy val eventHandler: TypedEventHandler[BankAccount] = wire[AccountEventHandler]
   lazy val commandHandler: TypedCommandHandler[BankAccount] = wire[AccountCommandHandler]
-  lazy val aggregate: AggregateRoot[BankAccount] = wire[AccountAggregate]
   lazy val encryptor: ProtoEncryption = NoEncryption
 
-  override def aggregateRoot: AggregateRoot[_] = aggregate
+  override lazy val aggregateRoot: AggregateRoot =
+    new AccountAggregate(actorSystem, commandHandler, eventHandler, BankAccount.defaultInstance, encryptionAdapter)
 
-  override def server: LagomServer =
+  override lazy val server: LagomServer =
     serverFor[AccountService](wire[AccountServiceImpl])
       .additionalRouter(wire[AccountGrpcServiceImpl])
 

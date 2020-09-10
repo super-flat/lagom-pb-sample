@@ -6,7 +6,6 @@ import java.util.UUID
 import akka.actor.ActorSystem
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
 import akka.grpc.scaladsl.Metadata
-import io.superflat.lagompb.{AggregateRoot, BaseGrpcServiceImpl}
 import io.superflat.lagompb.samples.account.common._
 import io.superflat.lagompb.samples.protobuf.account.apis.{
   ApiResponse,
@@ -17,22 +16,22 @@ import io.superflat.lagompb.samples.protobuf.account.apis.{
 import io.superflat.lagompb.samples.protobuf.account.commands.{GetAccount, OpenBankAccount, ReceiveMoney, TransferMoney}
 import io.superflat.lagompb.samples.protobuf.account.services.AbstractAccountGrpcServicePowerApiRouter
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
-import scalapb.{GeneratedMessage, GeneratedMessageCompanion}
+import io.superflat.lagompb.{AggregateRoot, BaseGrpcServiceImpl}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AccountGrpcServiceImpl(
-    sys: ActorSystem,
-    clusterSharding: ClusterSharding,
-    accountAggregate: AggregateRoot[BankAccount],
+  sys: ActorSystem,
+  val clusterSharding: ClusterSharding,
+  val aggregateRoot: AggregateRoot
 )(implicit ec: ExecutionContext)
     extends AbstractAccountGrpcServicePowerApiRouter(sys)
     with BaseGrpcServiceImpl {
 
   override def openAccount(in: OpenAccountRequest, metadata: Metadata): Future[ApiResponse] = {
     val accountId: String = UUID.randomUUID().toString
-    sendCommand[OpenBankAccount, BankAccount](
-      clusterSharding,
+    sendCommand(
+      accountId,
       OpenBankAccount()
         .withCompanyUuid(in.companyUuid)
         .withAccountId(accountId)
@@ -40,37 +39,32 @@ class AccountGrpcServiceImpl(
         .withBalance(in.balance)
         .withOpenedAt(Instant.now().toTimestamp),
       Map.empty[String, String]
-    ).map(data => ApiResponse().withData(data.state))
+    ).map(data => ApiResponse().withData(data.getState.unpack[BankAccount]))
   }
 
   override def debitAccount(in: TransferMoneyRequest, metadata: Metadata): Future[ApiResponse] = {
-    sendCommand[TransferMoney, BankAccount](
-      clusterSharding,
+    sendCommand(
+      in.accountId,
       TransferMoney()
         .withAccountId(in.accountId)
         .withAmount(in.amount)
         .withCompanyUuid(in.companyUuid),
       Map.empty[String, String]
-    ).map(data => ApiResponse().withData(data.state))
+    ).map(data => ApiResponse().withData(data.getState.unpack[BankAccount]))
   }
 
   override def creditAccount(in: ReceiveMoneyRequest, metadata: Metadata): Future[ApiResponse] = {
-    sendCommand[ReceiveMoney, BankAccount](
-      clusterSharding,
+    sendCommand(
+      in.accountId,
       ReceiveMoney()
         .withAccountId(in.accountId)
         .withAmount(in.amount)
         .withCompanyUuid(in.companyUuid),
       Map.empty[String, String]
-    ).map(data => ApiResponse().withData(data.state))
+    ).map(data => ApiResponse().withData(data.getState.unpack[BankAccount]))
   }
 
   override def get(in: GetAccount, metadata: Metadata): Future[ApiResponse] =
-    sendCommand[GetAccount, BankAccount](clusterSharding, in, Map.empty[String, String])
-      .map(data => ApiResponse().withData(data.state))
-
-  override def aggregateRoot: AggregateRoot[_] = accountAggregate
-
-  override def aggregateStateCompanion: GeneratedMessageCompanion[_ <: GeneratedMessage] = BankAccount
-
+    sendCommand(in.accountId, in, Map.empty[String, String])
+      .map(data => ApiResponse().withData(data.getState.unpack[BankAccount]))
 }

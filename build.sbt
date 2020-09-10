@@ -1,4 +1,4 @@
-import play.grpc.gen.scaladsl.{PlayScalaClientCodeGenerator, PlayScalaServerCodeGenerator}
+import play.grpc.gen.scaladsl.PlayScalaServerCodeGenerator
 
 enablePlugins(DockerComposePlugin)
 dockerImageCreationTask := (Docker / publishLocal in `account`).value
@@ -38,9 +38,8 @@ lazy val `account-api` = project
 lazy val `account` = project
   .in(file("account"))
   .enablePlugins(LagomScala, JavaAgent)
+  .enablePlugins(PlayAkkaHttp2Support)
   .enablePlugins(JavaAppPackaging)
   .enablePlugins(LagomImpl)
-  .settings(name := "account",
-    javaAgents += "io.kamon" % "kanela-agent" %"1.0.6"
-  )
+  .settings(name := "account", javaAgents += "io.kamon" % "kanela-agent" % "1.0.6")
   .dependsOn(`account-api`)

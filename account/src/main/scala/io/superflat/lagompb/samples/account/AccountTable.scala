@@ -16,7 +16,7 @@ final case class AccountEntity(
     createdAt: Instant,
     lastModifiedBy: Option[String] = None,
     lastModifiedAt: Option[Instant] = None,
-    isDeleted: Boolean = false,
+    isDeleted: Boolean = false
 )
 
 class AccountTable(tag: Tag) extends SlickBasedTable[AccountEntity](tag, None, "accounts") {

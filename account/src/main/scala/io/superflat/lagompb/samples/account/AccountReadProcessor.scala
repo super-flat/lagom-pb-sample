@@ -5,17 +5,16 @@ import java.time.Instant
 import akka.Done
 import akka.actor.ActorSystem
 import akka.actor.typed.scaladsl.adapter._
-import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, MoneyTransferred}
-import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
-import io.superflat.lagompb.GlobalException
 import io.superflat.lagompb.encryption.EncryptionAdapter
 import io.superflat.lagompb.protobuf.v1.core.MetaData
-import io.superflat.lagompb.readside.{ReadSideEvent, ReadSideProcessor, TypedReadSideProcessor}
-import scalapb.{GeneratedMessage, GeneratedMessageCompanion}
+import io.superflat.lagompb.readside.TypedReadSideProcessor
+import io.superflat.lagompb.samples.protobuf.account.events.{AccountOpened, MoneyTransferred}
+import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
+import scalapb.GeneratedMessage
 import slick.dbio.{DBIO, DBIOAction, Effect, NoStream}
 
-import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext}
 
 class AccountReadProcessor(
     actorSystem: ActorSystem,
@@ -24,18 +23,21 @@ class AccountReadProcessor(
 )(implicit ec: ExecutionContext)
     extends TypedReadSideProcessor(encryptionAdapter)(ec, actorSystem.toTyped) {
 
-  override def handleTyped(event: GeneratedMessage, eventTag: String, state: GeneratedMessage, metaData: MetaData): DBIO[Done] = {
-    log.info(s"Processing event from Tag ${eventTag}")
+  override def handleTyped(
+      event: GeneratedMessage,
+      eventTag: String,
+      state: GeneratedMessage,
+      metaData: MetaData
+  ): DBIO[Done] = {
+    log.info(s"Processing event from Tag $eventTag")
 
     event match {
-      case e: AccountOpened => handleAccountOpened(e, state.asInstanceOf[BankAccount])
+      case e: AccountOpened    => handleAccountOpened(e, state.asInstanceOf[BankAccount])
       case e: MoneyTransferred => handleMoneyTransferred(e, state.asInstanceOf[BankAccount])
       case _ =>
-        DBIOAction.failed(throw new GlobalException(s" event ${event.companion.scalaDescriptor.fullName} not handled"))
+        DBIOAction.failed(throw new RuntimeException(s" event ${event.companion.scalaDescriptor.fullName} not handled"))
     }
   }
-
-
 
   private def handleMoneyTransferred(
       event: MoneyTransferred,
@@ -89,7 +91,6 @@ class AccountReadProcessor(
 
     DBIOAction.successful(Done)
   }
-
 
   override def projectionName: String = "accounts-read-projection"
 }

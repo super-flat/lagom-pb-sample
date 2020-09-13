@@ -7,16 +7,18 @@ object Dependencies {
 
   object Versions {
     val scala213 = "2.13.1"
-    val lagompbVersion = "0.9.0+3-5ec5cf5e-SNAPSHOT"
+    val lagompbVersion = "1.0.0"
     val silencerVersion = "1.6.0"
-    val KanelaVersion = "1.0.6"
     val AkkaVersion = "2.6.9"
+    val KamonVersion = "2.1.6"
   }
 
   object Compile {
     val lagompb: ModuleID = "io.superflat" %% "lagompb-core" % Versions.lagompbVersion
     val lagompbReadSide = "io.superflat" %% "lagompb-readside" % Versions.lagompbVersion
-    val kanela = "io.kamon" % "kanela-agent" % Versions.KanelaVersion
+    val KamonBundle: ModuleID = "io.kamon" %% "kamon-bundle" % Versions.KamonVersion
+    val KamonPrometheus: ModuleID = "io.kamon" %% "kamon-prometheus" % Versions.KamonVersion
+    val KamonJaeger: ModuleID = "io.kamon" %% "kamon-jaeger" % Versions.KamonVersion
   }
 
   object Runtime {

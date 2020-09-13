@@ -14,8 +14,10 @@ import io.superflat.lagompb.encryption.{NoEncryption, ProtoEncryption}
 import io.superflat.lagompb.samples.account.api.AccountService
 import io.superflat.lagompb.samples.protobuf.account.state.BankAccount
 import io.superflat.lagompb.{AggregateRoot, BaseApplication, TypedCommandHandler, TypedEventHandler}
+import kamon.Kamon
 
 abstract class AccountApplication(context: LagomApplicationContext) extends BaseApplication(context) {
+  Kamon.init()
   // Let us hook in the readSide Processor
   lazy val accountRepository: AccountRepository =
     wire[AccountRepository]

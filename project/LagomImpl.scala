@@ -12,7 +12,14 @@ object LagomImpl extends AutoPlugin {
     Seq(
       version := sys.env.getOrElse("VERSION", "development"),
       dockerBaseImage := "openjdk:11",
-      libraryDependencies ++= Seq(Compile.lagompb, Compile.lagompbReadSide, Runtime.lagompbRuntime),
+      libraryDependencies ++= Seq(
+        Compile.lagompb,
+        Compile.lagompbReadSide,
+        Compile.KamonBundle,
+        Compile.KamonJaeger,
+        Compile.KamonPrometheus,
+        Runtime.lagompbRuntime
+      ),
       dependencyOverrides ++= Dependencies.AkkaOverrideDeps
     )
 }

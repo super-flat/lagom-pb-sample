@@ -9,7 +9,13 @@ object LagomApi extends AutoPlugin {
 
   override def projectSettings =
     Seq(
-      libraryDependencies ++= Seq(Compile.lagompb, Runtime.lagompbRuntime),
+      libraryDependencies ++= Seq(
+        Compile.lagompb,
+        Runtime.lagompbRuntime,
+        Compile.KamonBundle,
+        Compile.KamonJaeger,
+        Compile.KamonPrometheus
+      ),
       dependencyOverrides ++= Dependencies.AkkaOverrideDeps
     )
 }

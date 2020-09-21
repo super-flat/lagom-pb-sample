@@ -1,5 +1,4 @@
 // this is merely to pull sonatype dependencies that are not yet on maven central
-resolvers ++= Seq(Resolver.jcenterRepo, Resolver.sonatypeRepo("public"), Resolver.sonatypeRepo("snapshots"))
 addSbtPlugin("io.superflat" % "lagompb-plugin" % "1.0.0")
 addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.7.3")

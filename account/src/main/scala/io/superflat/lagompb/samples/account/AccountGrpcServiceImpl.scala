@@ -6,6 +6,7 @@ import java.util.UUID
 import akka.actor.ActorSystem
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
 import akka.grpc.scaladsl.Metadata
+import com.google.protobuf.any.Any
 import io.superflat.lagompb.samples.account.common._
 import io.superflat.lagompb.samples.protobuf.account.apis.{
   ApiResponse,
@@ -21,9 +22,9 @@ import io.superflat.lagompb.{AggregateRoot, BaseGrpcServiceImpl}
 import scala.concurrent.{ExecutionContext, Future}
 
 class AccountGrpcServiceImpl(
-  sys: ActorSystem,
-  val clusterSharding: ClusterSharding,
-  val aggregateRoot: AggregateRoot
+    sys: ActorSystem,
+    val clusterSharding: ClusterSharding,
+    val aggregateRoot: AggregateRoot
 )(implicit ec: ExecutionContext)
     extends AbstractAccountGrpcServicePowerApiRouter(sys)
     with BaseGrpcServiceImpl {
@@ -38,7 +39,7 @@ class AccountGrpcServiceImpl(
         .withAccountOwner(in.accountOwner)
         .withBalance(in.balance)
         .withOpenedAt(Instant.now().toTimestamp),
-      Map.empty[String, String]
+      Map.empty[String, Any]
     ).map(data => ApiResponse().withData(data.getState.unpack[BankAccount]))
   }
 
@@ -49,7 +50,7 @@ class AccountGrpcServiceImpl(
         .withAccountId(in.accountId)
         .withAmount(in.amount)
         .withCompanyUuid(in.companyUuid),
-      Map.empty[String, String]
+      Map.empty[String, Any]
     ).map(data => ApiResponse().withData(data.getState.unpack[BankAccount]))
   }
 
@@ -60,11 +61,11 @@ class AccountGrpcServiceImpl(
         .withAccountId(in.accountId)
         .withAmount(in.amount)
         .withCompanyUuid(in.companyUuid),
-      Map.empty[String, String]
+      Map.empty[String, Any]
     ).map(data => ApiResponse().withData(data.getState.unpack[BankAccount]))
   }
 
   override def get(in: GetAccount, metadata: Metadata): Future[ApiResponse] =
-    sendCommand(in.accountId, in, Map.empty[String, String])
+    sendCommand(in.accountId, in, Map.empty[String, Any])
       .map(data => ApiResponse().withData(data.getState.unpack[BankAccount]))
 }

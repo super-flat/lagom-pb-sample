@@ -5,6 +5,7 @@ import java.util.UUID
 
 import akka.NotUsed
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
+import com.google.protobuf.any.Any
 import com.lightbend.lagom.scaladsl.api.ServiceCall
 import com.lightbend.lagom.scaladsl.persistence.PersistentEntityRegistry
 import io.superflat.lagompb.protobuf.v1.core.StateWrapper
@@ -23,9 +24,9 @@ import io.superflat.lagompb.{AggregateRoot, BaseServiceImpl}
 import scala.concurrent.ExecutionContext
 
 class AccountServiceImpl(
-  clusterSharding: ClusterSharding,
-  persistentEntityRegistry: PersistentEntityRegistry,
-  aggregate: AggregateRoot
+    clusterSharding: ClusterSharding,
+    persistentEntityRegistry: PersistentEntityRegistry,
+    aggregate: AggregateRoot
 )(implicit ec: ExecutionContext)
     extends BaseServiceImpl(clusterSharding, persistentEntityRegistry, aggregate)
     with AccountService {
@@ -41,7 +42,7 @@ class AccountServiceImpl(
           .withAccountOwner(req.accountOwner)
           .withBalance(req.balance)
           .withOpenedAt(Instant.now().toTimestamp),
-        Map.empty[String, String]
+        Map.empty[String, Any]
       ).map(getApiResponse)
     }
   }
@@ -53,7 +54,7 @@ class AccountServiceImpl(
         .withAccountId(accountId)
         .withAmount(req.amount)
         .withCompanyUuid(req.companyUuid),
-      Map.empty[String, String]
+      Map.empty[String, Any]
     ).map(getApiResponse)
   }
 
@@ -64,12 +65,12 @@ class AccountServiceImpl(
         .withAccountId(accountId)
         .withAmount(req.amount)
         .withCompanyUuid(req.companyUuid),
-      Map.empty[String, String]
+      Map.empty[String, Any]
     ).map(getApiResponse)
   }
 
   override def getAccount(accountId: String): ServiceCall[NotUsed, ApiResponse] = { _ =>
-    sendCommand(accountId, GetAccount().withAccountId(accountId), Map.empty[String, String])
+    sendCommand(accountId, GetAccount().withAccountId(accountId), Map.empty[String, Any])
       .map(getApiResponse)
   }
 

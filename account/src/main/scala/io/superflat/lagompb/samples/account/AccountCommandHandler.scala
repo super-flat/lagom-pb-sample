@@ -52,7 +52,8 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends TypedCommandHandle
         }
 
       case Failure(violation) =>
-        CommandHandlerResponse().withFailure(FailureResponse().withValidation(violation.getMessage))
+        //FIXME see how best to handle the list of validation errors
+        CommandHandlerResponse().withFailure(FailureResponse().withValidation(""))
     }
   }
 
@@ -67,7 +68,7 @@ class AccountCommandHandler(actorSystem: ActorSystem) extends TypedCommandHandle
           Any.pack(AccountOpened(cmd.companyUuid, cmd.accountId, cmd.balance, cmd.accountOwner))
         )
 
-      case Failure(violation: ValidationException) =>
+      case Failure(violation: Seq[ValidationException]) =>
         CommandHandlerResponse().withFailure(
           FailureResponse().withValidation(s"opening balance ${cmd.balance} is below the 200 minimum required")
         )

@@ -1,5 +1,5 @@
 // this is merely to pull sonatype dependencies that are not yet on maven central
-addSbtPlugin("io.superflat" % "lagompb-plugin" % "1.0.1")
+addSbtPlugin("io.superflat" % "lagompb-plugin" % "1.0.3")
 addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.7.3")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.2")

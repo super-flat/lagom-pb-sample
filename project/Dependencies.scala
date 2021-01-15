@@ -7,9 +7,9 @@ object Dependencies {
 
   object Versions {
     val scala213 = "2.13.1"
-    val lagompbVersion = "1.0.1"
+    val lagompbVersion = "1.0.3"
     val silencerVersion = "1.6.0"
-    val AkkaVersion = "2.6.9"
+    val AkkaVersion = "2.6.11"
     val KamonVersion = "2.1.6"
   }
 
